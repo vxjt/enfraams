@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>enfraam's</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="page">
+    <div id="results">
+      <span id="gunname">▚▚▚▚▚▚▚▚</span>
+      <span class="resultlabel">
+        <label for="hadmg">high armor damage: </label>
+        <span id="hadmg">▚▚▚▚▚</span>
+        <span id="hasim" class="comment">▚▚▚▚▚▚▚▚▚▚</span>
+      </span>
+      <span class="resultlabel">
+        <label for="lowdmg">low armor damage: </label>
+        <span id="lowdmg">▚▚▚▚▚</span>
+        <span id="lowsim" class="comment">▚▚▚▚▚▚▚▚▚▚</span>
+      </span>
+      <span class="resultlabel caps">caps</span>
+      <span class="resultlabel">
+        <label for="fullagg">fully aggressive initiative: </label>
+        <span id="fullagg">▚▚</span>
+      </span>
+      <span class="resultlabel">
+        <label for="full def">fully defensive initiative: </label>
+        <span id="fulldef">▚▚</span>
+      </span>
+      <div id="specials">
+        <span class="resultlabel">▚▚▚▚▚▚▚▚</span>
+      </div>
+    </div>
+    <div id="inputs">
+      <div id="weapon" class="panel">
+        <span class="caps inputlabel">weapon stats</span>
+        <span class="label">
+          <label for="mindmg">min damage: </label>
+          <input id="mindmg" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="maxdmg">max damage: </label>
+          <input id="maxdmg" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="critdmg">(crit damage): </label>
+          <input id="critdmg" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="attacktime">attack time:</label>
+          <input id="attacktime" class="numin" inputmode="decimal" />
+        </span>
+        <span class="label">
+          <label for="rectime">recharge time:</label>
+          <input id="rectime" class="numin" inputmode="decimal" />
+        </span>
+        <span class="label">
+          <label for="mbs">max skill:</label>
+          <input id="mbs" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="burstcycle">burst cycle<span class="comment">*</span>:</label>
+          <input id="burstcycle" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="fling" class="toggleclick">fling shot</label>
+          <span id="fling" class="toggleclick toggle">no</span>
+        </span>
+        <div id="paste" class="label">
+          <textarea id="pastetext" placeholder="item info"></textarea>
+          &nbsp;<button id="pastebtn">▲</button>
+        </div>
+        </span>
+      </div>
+      <div id="character" class="panel">
+        <span class="caps inputlabel">character stats</span>
+        <span class="label">
+          <label for="ar">attack rating: </label>
+          <input id="ar" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="inits">initiative: </label>
+          <input id="inits" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="damage">damage: </label>
+          <input id="damage" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="crit">crit %: </label>
+          <input id="crit" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="flingchar">fling: </label>
+          <input id="flingchar" class="numin" inputmode="numeric" />
+        </span>
+        <span class="label">
+          <label for="burst">burst: </label>
+          <input id="burst" class="numin" inputmode="numeric" />
+        </span>
+        <div id="calc" class="label">
+          <button id="calcbtn">=</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="dev">
+  </div>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
