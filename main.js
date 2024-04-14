@@ -1,3 +1,15 @@
+/*
+dps doesnt work
+missing special attacks
+buttons are ugly
+textbox needs more info
+better varnames in calc
+overflow issues with output flex
+go over flex layout again
+ensure math.rounds in calc should be rounded and not ceil/floor
+gap in the space between the special label and the toggle value
+*/
+
 const body = document.querySelector(`body`)
 const dev = document.querySelector('#dev')
 
@@ -65,28 +77,28 @@ function toggle(e) {
 }
 
 function paste(s) {
-  let tgunname = s.match(/^.*/g)
-  let tql = Number(s.match(/(?<=Quality level: )[\d]+/g))
-  let tinmindmg = s.match(/(?<=Damage: )[\d]+/g)
-  let tinmaxdmg = s.match(/(?<=Damage: \d+-)[\d]+/g)
-  let tincritdmg = s.match(/(?<=Damage: \d+-\d+\()[\d]+/g)
-  let tinattacktime = s.match(/(?<=Attack )[\d.]+/g)
-  let tinrectime = s.match(/(?<=Recharge )[\d.]+/g)
-  let tinmbs = s.match(/(?<=Max beneficial skill: )[\d]+/g)
+  let a = s.match(/^.*/g)
+  let b = Number(s.match(/(?<=Quality level: )[\d]+/g))
+  let c = s.match(/(?<=Damage: )[\d]+/g)
+  let d = s.match(/(?<=Damage: \d+-)[\d]+/g)
+  let e = s.match(/(?<=Damage: \d+-\d+\()[\d]+/g)
+  let f = s.match(/(?<=Attack )[\d.]+/g)
+  let g = s.match(/(?<=Recharge )[\d.]+/g)
+  let h = s.match(/(?<=Max beneficial skill: )[\d]+/g)
 
   if (s.match(/Special:.*FlingShot/g)) {
     infling.innerHTML = "yes"
   }
 
-  if (tgunname && tinmindmg && tinmaxdmg && tincritdmg && tinattacktime && tinrectime && tinmbs) {
-    gunname = tgunname
-    ql = tql
-    inmindmg.value = tinmindmg
-    inmaxdmg.value = tinmaxdmg
-    incritdmg.value = tincritdmg
-    inattacktime.value = tinattacktime
-    inrectime.value = tinrectime
-    inmbs.value = tinmbs
+  if (a && c && d && e && f && g && h) {
+    gunname = a
+    ql = b
+    inmindmg.value = c
+    inmaxdmg.value = d
+    incritdmg.value = e
+    inattacktime.value = f
+    inrectime.value = g
+    inmbs.value = h
     pastebtn.innerHTML = "✓"
   } else {
     pastebtn.innerHTML = "☹"
@@ -114,9 +126,22 @@ function calc() {
     spanname.innerHTML = `▚▚▚▚▚▚▚▚`
   }
 
-  let ds = (mbs + 3375) / 1250
+  let ds
+  let ds2
+  let ds3
+
+  if(mbs < 1000) {
+    ds = (mbs + 400) / 400
+  } else {
+    ds = (mbs + 3375) / 1250
+    ds2 = (mbs - 1000) / 1500 * 1.2 + 3.5
+    ds3 = (mbs - 1000) / 1500 * 0.6 + 3.5
+  }
+
   let tmindmg = mindmg * ds
   let tmaxdmg = maxdmg * ds
+  let dmg2 = ds2 * (maxdmg + critdmg) + 725
+  let dmg3 = ds3 * (maxdmg + critdmg) + 725
   let thacrit = ds * (mindmg + critdmg)
   let tlowcrit = ds * (maxdmg + critdmg)
   let fulldattackmin = 600 * (attacktime + 1.75 - 1)
@@ -127,8 +152,8 @@ function calc() {
   let fulldmin = fulldattackmin > fulldrecmin ? fulldattackmin : fulldrecmin
 
   if (mindmg && maxdmg && critdmg) {
-    spanhadmg.innerHTML = `${Math.round(tmindmg)} (${Math.round(thacrit)})`
-    spanlowdmg.innerHTML = `${Math.round(tmaxdmg)} (${Math.round(tlowcrit)})`
+    spanhadmg.innerHTML = `${Math.floor(tmindmg)} (${Math.floor(thacrit)})`
+    spanlowdmg.innerHTML = `${Math.floor(tmaxdmg)} (${Math.floor(tlowcrit)}) - ${Math.floor(dmg2)} - ${Math.floor(dmg3)}`
   } else {
     spanhadmg.innerHTML = `▚▚▚▚▚`
     spanlowdmg.innerHTML = `▚▚▚▚▚`
@@ -168,7 +193,7 @@ function calc() {
 
   let simds, simmindmg, simmaxdmg, simhacrit, simlowcrit, avgha, avglow, fulldattack, fulldrec, fullaattack, fullarec, simdpsfullaha, simdpsfulldha, simdpsfullalow, simdpsfulldlow, simflingcd, simflinghadps, simflinglowdps, simburstcd, simbursthadps, simburstlowdps
 
-  if (ar >= 0 && crit >= 0 && inits && damage >= 0) {
+  if (ar >= 0 && crit >= 0 && damage >= 0 && !isNaN(inits)) {
     simds = (mbs < ar ? mbs : ar + 3375) / 1250
     simmindmg = mindmg * simds + damage
     simmaxdmg = maxdmg * simds + damage
@@ -205,8 +230,8 @@ function calc() {
     simdpsfullalow = avglow / (fullaattack + fullarec) + simburstlowdps + simflinglowdps
     simdpsfulldlow = avglow / (fulldattack + fulldrec) + simburstlowdps + simflinglowdps
 
-    spanhasim.innerHTML = `//dmg: ${Math.round(simmindmg)} (${Math.round(simhacrit)}),  dps: ${Math.floor(simdpsfulldha)} agg - ${Math.floor(simdpsfullaha)} def`
-    spanlowsim.innerHTML = `//dmg: ${Math.round(simmaxdmg)} (${Math.round(simlowcrit)}),  dps: ${Math.floor(simdpsfulldha)} agg - ${Math.floor(simdpsfullaha)} def`
+    spanhasim.innerHTML = `//dmg: ${Math.round(simmindmg)} (${Math.round(simhacrit)}),  dps: ${Math.floor(simdpsfullaha)} agg - ${Math.floor(simdpsfulldha)} def`
+    spanlowsim.innerHTML = `//dmg: ${Math.round(simmaxdmg)} (${Math.round(simlowcrit)}),  dps: ${Math.floor(simdpsfullalow)} agg - ${Math.floor(simdpsfulldlow)} def`
   } else {
     spanhasim.innerHTML = `▚▚▚▚▚▚▚▚▚▚`
     spanlowsim.innerHTML = `▚▚▚▚▚▚▚▚▚▚`
