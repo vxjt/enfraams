@@ -153,7 +153,7 @@ function calc() {
 
   if (mindmg && maxdmg && critdmg) {
     spanhadmg.innerHTML = `${Math.floor(tmindmg)} (${Math.floor(thacrit)})`
-    spanlowdmg.innerHTML = `${Math.floor(tmaxdmg)} (${Math.floor(tlowcrit)}) - ${Math.floor(dmg2)} - ${Math.floor(dmg3)}`
+    spanlowdmg.innerHTML = `${Math.floor(tmaxdmg)} (${Math.floor(tlowcrit)})`
   } else {
     spanhadmg.innerHTML = `▚▚▚▚▚`
     spanlowdmg.innerHTML = `▚▚▚▚▚`
@@ -199,7 +199,7 @@ function calc() {
     simmaxdmg = maxdmg * simds + damage
     simhacrit = simds * (mindmg + critdmg) + damage
     simlowcrit = simds * (maxdmg + critdmg) + damage
-    crit = crit > 100 ? 100 : crit
+    crit = crit > 100 ? 1 : crit / 100
     avgha = simmindmg * (1 - crit) + simhacrit * crit
     avglow = simmaxdmg * (1 - crit) + simlowcrit * crit
     fulldattack = 1 > attacktime + 1.75 - inits / 600 ? 1 : attacktime + 1.75 - inits / 600
