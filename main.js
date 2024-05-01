@@ -1,5 +1,4 @@
 /*
-dps doesnt work
 missing special attacks
 buttons are ugly
 textbox needs more info
@@ -41,34 +40,44 @@ const incrit = document.querySelector('#crit')
 const inflingchar = document.querySelector('#flingchar')
 const inburst = document.querySelector('#burst')
 
+const spanaggdeflabel = document.querySelector('#aggdeflabel')
+const inaggdef = document.querySelector('#aggdef')
+
 const calcbtn = document.querySelector(`#calcbtn`)
 
 const toggles = document.querySelectorAll('.toggleclick')
 
-var gunname, ql, mindmg, maxdmg, critdmg, attacktime, rectime, mbs, fling, burstcycle, ar, inits, damage, crit, flingchar, burst
+var gunname, ql, mindmg, maxdmg, critdmg, attacktime, rectime, mbs, fling, burstcycle, ar, inits, damage, crit, flingchar, burst, aggdef
 
 body.addEventListener("click", event)
+inaggdef.addEventListener("input", event)
 
 function event(e) {
-  switch (e.target) {
-    case pastebtn:
-      paste(pastetext.value)
-      break
-    case pastetext:
-      if (pastetext.value) {
-        pastetext.value = null
-      }
-      pastebtn.innerHTML = "▲"
-      break
-    case calcbtn:
-      calc()
-      break
-    default:
-      for (let a of toggles) {
-        if (e.target == a) {
-          toggle(e.target.htmlFor ? document.querySelector(`#${e.target.htmlFor}`) : e.target)
+  if (e.type == 'input') {
+    let ad = Math.floor(0.5 * (Number(inaggdef.value) + 100))
+    spanaggdeflabel.innerHTML = `${ad}%`
+  } else if (e.type == 'click') {
+    switch (e.target) {
+      case pastebtn:
+        paste(pastetext.value)
+        break
+      case pastetext:
+        if (pastetext.value) {
+          pastetext.value = null
         }
-      }
+        pastebtn.innerHTML = "▲"
+        break
+      case calcbtn:
+        calc()
+        break
+      default:
+        for (let a of toggles) {
+          if (e.target == a) {
+            toggle(e.target.htmlFor ? document.querySelector(`#${e.target.htmlFor}`) : e.target)
+          }
+        }
+
+    }
   }
 }
 
@@ -106,19 +115,20 @@ function paste(s) {
 }
 
 function calc() {
-  mindmg = Number(inmindmg.value)
-  maxdmg = Number(inmaxdmg.value)
-  critdmg = Number(incritdmg.value)
-  attacktime = Number(inattacktime.value)
-  rectime = Number(inrectime.value)
-  mbs = Number(inmbs.value)
-  burstcycle = Number(inburstcycle.value)
-  ar = Number(inar.value)
-  inits = Number(ininits.value)
+  mindmg = inmindmg.value != undefined ? Number(inmindmg.value) : undefined
+  maxdmg = inmaxdmg.value != undefined ? Number(inmaxdmg.value) : undefined
+  critdmg = incritdmg.value != undefined ? Number(incritdmg.value) : undefined
+  attacktime = inattacktime.value != undefined ? Number(inattacktime.value) : undefined
+  rectime = inrectime.value != undefined ? Number(inrectime.value) : undefined
+  mbs = inmbs.value != undefined ? Number(inmbs.value) : undefined
+  burstcycle = inburstcycle.value != undefined ? Number(inburstcycle.value) : undefined
+  ar = inar.value != undefined ? Number(inar.value) : undefined
+  inits = ininits.value != undefined ? Number(ininits.value) : undefined
   damage = Number(indamage.value)
   crit = Number(incrit.value)
-  flingchar = Number(inflingchar.value)
-  burst = Number(inburst.value)
+  flingchar = inflingchar.value != undefined ? Number(inflingchar.value) : undefined
+  burst = inburst.value != undefined ? Number(inburst.value) : undefined
+  aggdef = Number(inaggdef.value)
 
   if (gunname) {
     spanname.innerHTML = `${gunname} ql${ql}`
@@ -130,7 +140,7 @@ function calc() {
   let ds2
   let ds3
 
-  if(mbs < 1000) {
+  if (mbs < 1000) {
     ds = (mbs + 400) / 400
   } else {
     ds = (mbs + 3375) / 1250
@@ -144,12 +154,6 @@ function calc() {
   let dmg3 = ds3 * (maxdmg + critdmg) + 725
   let thacrit = ds * (mindmg + critdmg)
   let tlowcrit = ds * (maxdmg + critdmg)
-  let fulldattackmin = 600 * (attacktime + 1.75 - 1)
-  let fulldrecmin = 300 * (rectime + 1.75 - 1)
-  let fullaattackmin = 600 * (attacktime - 0.25 - 1)
-  let fullarecmin = 300 * (rectime - 0.25 - 1)
-  let fullamin = fullaattackmin > fullarecmin ? fullaattackmin : fullarecmin
-  let fulldmin = fulldattackmin > fulldrecmin ? fulldattackmin : fulldrecmin
 
   if (mindmg && maxdmg && critdmg) {
     spanhadmg.innerHTML = `${Math.floor(tmindmg)} (${Math.floor(thacrit)})`
@@ -160,8 +164,8 @@ function calc() {
   }
 
   if (attacktime && rectime) {
-    spanfullagg.innerHTML = `${Math.ceil(fullamin)}`
-    spanfulldef.innerHTML = `${Math.ceil(fulldmin)}`
+    spanfullagg.innerHTML = `${Math.ceil(mininit(attacktime, rectime, 100))}`
+    spanfulldef.innerHTML = `${Math.ceil(mininit(attacktime, rectime, -100))}`
   } else {
     spanfullagg.innerHTML = `▚▚`
     spanfulldef.innerHTML = `▚▚`
@@ -174,7 +178,7 @@ function calc() {
   if (infling.innerHTML == "yes" && attacktime) {
     flingwepcd = attacktime + 6
     flingcap = 300 * (5 * attacktime - 2)
-    wipspecial += `<span class="resultlabel"><label>fling shot: </label>${flingwepcd}s @ ${Math.ceil(flingcap)}</span>`
+    wipspecial += `<span class="resultlabel"><label>fling shot: </label>${flingwepcd.toFixed(2)}s @ ${Math.ceil(flingcap)}</span>`
   }
 
   let burstwepcd, burstcap
@@ -182,7 +186,7 @@ function calc() {
   if (burstcycle > 0) {
     burstwepcd = attacktime + 8
     burstcap = -25 * attacktime + 500 * rectime + burstcycle / 4 - 200
-    wipspecial += `<span class="resultlabel"><label>burst: </label>${burstwepcd}s @ ${Math.ceil(burstcap)}</span>`
+    wipspecial += `<span class="resultlabel"><label>burst: </label>${burstwepcd.toFixed(2)}s @ ${Math.ceil(burstcap)}</span>`
   }
 
   if (wipspecial == "") {
@@ -191,9 +195,9 @@ function calc() {
 
   divspecial.innerHTML = wipspecial
 
-  let simds, simmindmg, simmaxdmg, simhacrit, simlowcrit, avgha, avglow, fulldattack, fulldrec, fullaattack, fullarec, simdpsfullaha, simdpsfulldha, simdpsfullalow, simdpsfulldlow, simflingcd, simflinghadps, simflinglowdps, simburstcd, simbursthadps, simburstlowdps
+  let simds, simmindmg, simmaxdmg, simhacrit, simlowcrit, avgha, avglow, atkreduce, recreduce, aggdefmod, atktime, rtime, simdpsfullha, simdpsfulllow, simflingcd, simflinghadps, simflinglowdps, simburstcd, simbursthadps, simburstlowdps
 
-  if (ar >= 0 && crit >= 0 && damage >= 0 && !isNaN(inits)) {
+  if (ar && inits && mindmg && maxdmg && critdmg && attacktime && rectime) {
     simds = (mbs < ar ? mbs : ar + 3375) / 1250
     simmindmg = mindmg * simds + damage
     simmaxdmg = maxdmg * simds + damage
@@ -202,10 +206,19 @@ function calc() {
     crit = crit > 100 ? 1 : crit / 100
     avgha = simmindmg * (1 - crit) + simhacrit * crit
     avglow = simmaxdmg * (1 - crit) + simlowcrit * crit
-    fulldattack = 1 > attacktime + 1.75 - inits / 600 ? 1 : attacktime + 1.75 - inits / 600
-    fulldrec = 1 > rectime + 1.75 - inits / 300 ? 1 : rectime + 1.75 - inits / 300
-    fullaattack = 1 > attacktime - 0.25 - inits / 600 ? 1 : attacktime - 0.25 - inits / 600
-    fullarec = 1 > rectime - 0.25 - inits / 300 ? 1 : rectime - 0.25 - inits / 300
+
+    if (inits > 1200) {
+      atkreduce = (inits - 1200) / 1200 + 2
+      recreduce = (inits - 1200) / 1200 + 4
+    } else {
+      atkreduce = inits / 600
+      recreduce = inits / 300
+    }
+
+    aggdefmod = 0.75 - 0.01 * aggdef
+
+    atktime = attacktime - atkreduce + aggdefmod < 1 ? 1 : attacktime - atkreduce + aggdefmod
+    rtime = rectime - recreduce + aggdefmod < 1 ? 1 : rectime - recreduce + aggdefmod
 
     if (flingchar > 0 && infling.innerHTML == "yes") {
       simflingcd = flingwepcd < attacktime * 16 - flingchar / 100 ? attacktime * 16 - flingchar / 100 : flingwepcd
@@ -225,15 +238,30 @@ function calc() {
       simburstlowdps = 0
     }
 
-    simdpsfullaha = avgha / (fullaattack + fullarec) + simbursthadps + simflinghadps
-    simdpsfulldha = avgha / (fulldattack + fulldrec) + simbursthadps + simflinghadps
-    simdpsfullalow = avglow / (fullaattack + fullarec) + simburstlowdps + simflinglowdps
-    simdpsfulldlow = avglow / (fulldattack + fulldrec) + simburstlowdps + simflinglowdps
+    simdpsfullha = avgha / (atktime + rtime) + simbursthadps + simflinghadps
+    simdpsfulllow = avglow / (atktime + rtime) + simburstlowdps + simflinglowdps
 
-    spanhasim.innerHTML = `//dmg: ${Math.round(simmindmg)} (${Math.round(simhacrit)}),  dps: ${Math.floor(simdpsfullaha)} agg - ${Math.floor(simdpsfulldha)} def`
-    spanlowsim.innerHTML = `//dmg: ${Math.round(simmaxdmg)} (${Math.round(simlowcrit)}),  dps: ${Math.floor(simdpsfullalow)} agg - ${Math.floor(simdpsfulldlow)} def`
+    spanhasim.innerHTML = `//dmg: ${Math.round(simmindmg)} (${Math.round(simhacrit)}),  dps: ${Math.floor(simdpsfullha)}`
+    spanlowsim.innerHTML = `//dmg: ${Math.round(simmaxdmg)} (${Math.round(simlowcrit)}),  dps: ${Math.floor(simdpsfulllow)}`
   } else {
     spanhasim.innerHTML = `▚▚▚▚▚▚▚▚▚▚`
     spanlowsim.innerHTML = `▚▚▚▚▚▚▚▚▚▚`
   }
+}
+
+function mininit(a, r, ad) {
+  let mod = 0.75 - 0.01 * ad
+
+  if (a + mod - 1 > 2) {
+    a = 1200 * (a + mod - 3) + 1200
+  } else {
+    a = 600 * (a + mod - 1)
+  }
+  if (r + mod - 1 > 4) {
+    r = 1200 * (r + mod - 5) + 1200
+  } else {
+    r = 300 * (r + mod - 1)
+  }
+
+  return a > r ? a : r
 }

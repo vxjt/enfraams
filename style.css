@@ -28,6 +28,11 @@ textarea {
   overflow: hidden;
 }
 
+span.label {
+  display:flex;
+  align-items: center;
+}
+
 textarea:focus {
   outline: none;
 }
@@ -90,10 +95,16 @@ input:focus {
   text-transform: uppercase;
   color: var(--color-c);
   font-weight: bold;
+  width: 2em;
 }
 
 .toggleclick{
+  display: flex;
+  align-items: center;
+  height:1.5lh;
+  margin: var(--smargin);
   user-select: none;
+  justify-content: flex-start;
 }
 
 #page {
@@ -150,6 +161,15 @@ input:focus {
   align-items: flex-end;
   flex-direction: column;
   margin: var(--lmargin);
+}
+
+#aggdeflabel {
+  width: 2.25em;
+}
+
+#aggdef {
+  width: 9.75em;
+  color: var(--color-b);
 }
 
 #calc {
