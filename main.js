@@ -54,8 +54,7 @@ inaggdef.addEventListener("input", event)
 
 function event(e) {
   if (e.type == 'input') {
-    let ad = Math.floor(0.5 * (Number(inaggdef.value) + 100))
-    spanaggdeflabel.innerHTML = `${ad}%`
+    spanaggdeflabel.innerHTML = `${inaggdef.value}`
   } else if (e.type == 'click') {
     switch (e.target) {
       case pastebtn:
@@ -195,7 +194,7 @@ function calc() {
 
   divspecial.innerHTML = wipspecial
 
-  let simds, simmindmg, simmaxdmg, simhacrit, simlowcrit, avgha, avglow, atkreduce, recreduce, aggdefmod, atktime, rtime, simdpsfullha, simdpsfulllow, simflingcd, simflinghadps, simflinglowdps, simburstcd, simbursthadps, simburstlowdps
+  let simds, simmindmg, simmaxdmg, simhacrit, simlowcrit, avgha, avglow, atkreduce, recreduce, aggdefmod, atktime, rtime, ttime, simdpsfullha, simdpsfulllow, simflingcd, simflinghadps, simflinglowdps, simburstcd, simbursthadps, simburstlowdps
 
   if (ar && inits && mindmg && maxdmg && critdmg && attacktime && rectime) {
     simds = (mbs < ar ? mbs : ar + 3375) / 1250
@@ -219,6 +218,7 @@ function calc() {
 
     atktime = attacktime - atkreduce + aggdefmod < 1 ? 1 : attacktime - atkreduce + aggdefmod
     rtime = rectime - recreduce + aggdefmod < 1 ? 1 : rectime - recreduce + aggdefmod
+    ttime = atktime + rtime
 
     if (flingchar > 0 && infling.innerHTML == "yes") {
       simflingcd = flingwepcd < attacktime * 16 - flingchar / 100 ? attacktime * 16 - flingchar / 100 : flingwepcd
@@ -238,8 +238,8 @@ function calc() {
       simburstlowdps = 0
     }
 
-    simdpsfullha = avgha / (atktime + rtime) + simbursthadps + simflinghadps
-    simdpsfulllow = avglow / (atktime + rtime) + simburstlowdps + simflinglowdps
+    simdpsfullha = avgha / ttime + simbursthadps + simflinghadps
+    simdpsfulllow = avglow / ttime + simburstlowdps + simflinglowdps
 
     spanhasim.innerHTML = `//dmg: ${Math.round(simmindmg)} (${Math.round(simhacrit)}),  dps: ${Math.floor(simdpsfullha)}`
     spanlowsim.innerHTML = `//dmg: ${Math.round(simmaxdmg)} (${Math.round(simlowcrit)}),  dps: ${Math.floor(simdpsfulllow)}`
